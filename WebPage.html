@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <link rel="icon" href="HeadLogo.png">
+    <title>Pass Gen</title>
+
+    <script type="text/javascript" language="javascript" src="https://code.jquery.com/jquery-3.5.1.js"></script>
+
+</head>
+<header style="background-color: black;">
+    <style>
+        body {background-color: rgb(30, 43, 48)}
+    </style> 
+</header>
+
+
+<body >
+
+<div style="
+    color: rgb(255, 255, 255);
+    margin: auto;
+    width: 70%;
+    border: none ;padding: 1%;
+    background-color: rgb(2, 72, 82);
+    border-radius: 20px;">
+
+    <button style="float: right;" onclick="changelanguage()" type="button" id="language"></button>
+
+    <img src="310x150Logo.png" alt="Photo Pass Gen" style="margin-left: auto; alt:'PassGen' ;
+    margin-right: auto;
+    display: block;
+    border: 1px solid black;
+    border-radius: 2%;">
+    
+    <form>
+
+        <p id="QLength">
+            <input type="number" id="stringLength" value="8" max="100" min="5" style="width:7%;"/> 
+            <span id="QLengthT"></span>
+        </p>
+        <p id="QCharSame">
+            <input checked type="checkbox" id="stringCharSame"/> 
+            <span id="QCharSameT"></span>
+        </p>
+        <p id="QSymble">
+            <input type="checkbox" id="stringSymble" /> 
+            <span id="QSymbleT"></span>
+        </p>
+        <p id="QNumber">
+            <input type="checkbox" id="stringNumber" />
+            <span id="QNumberT"></span> 
+        </p>
+        <p id="QCap">
+            <input type="checkbox" id="stringCap" /> 
+            <span id="QCapT"></span>
+        </p>
+        <p id="QNoCap">
+            <input type="checkbox" id="stringNoCap" />
+            <span id="QNoCapT"></span> 
+        </p>
+        <p id="QPersonalised">
+            <input type="checkbox" id="stringPersonalise" /> 
+            <span id="QPersonalisedT"></span>
+        </p>
+        <p id="QPersonalisedTexteArea" style="height: 150px;">
+            <textarea type="text" id="stringPersonaliseTexte" placeholder="Ex:abcABC123!?$" style="display: block;
+            width:90%;
+            height:100%;
+            margin-right: auto;
+            margin-left: auto;"></textarea>
+        </p>
+
+        
+
+        <br>
+        <textarea id="Output" placeholder="Your generated password will show here" style="display: block;
+        width:90%;
+        margin-right: auto;
+        margin-left: auto;
+        background-color: lightgrey;
+        border-radius: 10px;"></textarea>
+
+        <br>
+        <button type="button" id="generateButton">Generate</button>
+        <button type="button" id="copyButton">Copy</button>
+    </form>
+</div>
+    
+
+</body>
+<script>
+    //Small cheat sheet
+    // $("---") =recherche balise du meme nom
+    // $(".---") =recherche classes du meme nom
+    // $("#---") =recherche Id du meme nom
+    // $("---[name=---]") =recherche balise du meme nom en specifiant une valeure. ici on filtre la variable "name"
+
+    //starting language texte
+    var language = "Francais"
+    var QLength = ": How long should the text be?"
+    var QCharSame = ": Do not use similar looking characters"
+    var QSymble = ": Do not use symbols characters"
+    var QNumber = ": Do not use digits"
+    var QCap = ": Do not use lowercase letters"
+    var QNoCap = ": Do not use capitalised letters"
+    var QPersonalised = ": Use Personalized text"
+    var QPersonalisedTexteArea = "Put your characters below without any spaces in between"
+    var generateButton = "Generate"
+    var copyButton = "Copy"
+    var hint = "Your generated password will show here"
+
+    //changes the language to one or the other depending on current laguage
+    function changelanguage(){
+        if(language == 'English'){
+            language = "Francais"
+            QLength = ": How long should the password be?"
+            QCharSame = ": Do not use similar looking characters"
+            QSymble = ": Do not use symbols characters"
+            QNumber = ": Do not use digits"
+            QCap = ": Do not use lowercase letters"
+            QNoCap = ": Do not use capitalised letters"
+            QPersonalised = ": Use Personalized characters"
+            QPersonalisedTexteArea = "Put your characters below without any spaces in between"
+            generateButton = "Generate"
+            copyButton = "Copy"
+            hint = "Your generated password will show here"
+        }else if(language == 'Francais'){
+            language = "English"
+            QLength = ": Quel longeur deverais etre le mot de passe"
+            QCharSame = ": Ne pas utiliser des characteres ressemblant"
+            QSymble = ": Ne pas utiliser des characteres symbole"
+            QNumber = ": Ne pas utiliser des nombres"
+            QCap = ": Ne pas utiliser de minuscules"
+            QNoCap = ": Ne pas utiliser des majuscules"
+            QPersonalised = ": Utiliser des characteres personnalisers"
+            QPersonalisedTexteArea = "Inscrivez les characteres ci-dessous sans espacement"
+            generateButton = "Generer"
+            copyButton = "Copier"
+            hint = "Votre mot de passe generer s'afficheras ici"
+        }
+        
+        updateLanguage();
+    }
+
+    //setup
+    updateLanguage()
+    defaultSelection(10,true,false,false,false,false,false)
+    
+    //Attribute the text to every checkbox
+    function updateLanguage(){
+        
+        $("#generateButton").text(generateButton);
+        $("#copyButton").text(copyButton);
+        $("#language").text(language);
+        $("#Output").attr('placeholder', hint);
+        
+
+        $("#QLengthT").text(QLength);
+        $("#QCharSameT").text(QCharSame);
+        $("#QSymbleT").text(QSymble);
+        $("#QNumberT").text(QNumber);
+        $("#QCapT").text(QCap);
+        $("#QNoCapT").text(QNoCap);
+        $("#QPersonalisedT").text(QPersonalised);
+        $("#QPersonalisedTexteAreaT").text("&emsp; &ensp; &nbsp; &nbsp;"+QPersonalisedTexteArea);
+        $("#languageT").text(language);
+        
+    }
+
+    //set's up the default selection of the form when opening/reloading
+    function defaultSelection(q1,q2,q3,q4,q5,q6,o1){
+
+        $("#QCharSame").append("<br/> &emsp; &ensp; &nbsp; Ex:0, o, O, i, I, 1, l, L");
+        $("#QSymble").append("<br/> &emsp; &ensp; &nbsp; Ex:!, ? et $");
+        $("#QNumber").append("<br/> &emsp; &ensp; &nbsp; Ex:1, 2, 3 ect...");
+
+        $("#stringLength").val(q1);
+        $("#stringCharSame").prop('checked', q2);
+        $("#stringSymble").prop('checked', q3);
+        $("#stringNumber").prop('checked', q4);
+        $("#stringCap").prop('checked', q5);
+        $("#stringNoCap").prop('checked', q6);
+        $("#stringPersonalise").prop('checked', o1);
+        $("#Output").val("");
+
+
+        //Hide the text area at the start according to default state
+        if(o1 == false){
+            $("#QPersonalisedTexteArea").hide();
+        }
+        
+    }
+    //Calls for a visual indication to the user. Used for errors
+    function showAlert(msg){
+        alert("Error : " + msg);
+    }
+
+    //The logic behind deciding what character to use for the password
+    function stringOfCharacters(){
+        var defaultCharactersNoCap = "abcdefghjkmnpqrstuvwxyz";
+        var defaultCharactersCap = "ABCDEFGHJKMNPQRSTUVWXYZ";
+        var similarCharacters = "lLiIoO";
+        var similarDigits = "10";
+        var defaultSymbols = "!$%*&";
+        var digits = "23456789";
+        var personalisedText = document.getElementById("stringPersonaliseTexte").value;
+
+        if( $("#stringCharSame").prop("checked") == true){
+            similarCharacters = "";
+            similarDigits = "";
+        }
+
+        if( $("#stringSymble").prop("checked") == true){
+            defaultSymbols = "";
+        }
+
+        if( $("#stringNumber").prop("checked") == true){
+            digits = "";
+        }
+
+        if( $("#stringCap").prop("checked") == true){
+            defaultCharactersNoCap = "";
+        }
+
+        if( $("#stringNoCap").prop("checked") == true){
+            defaultCharactersCap = "";
+        }
+
+        if( $("#stringNoChar").prop("checked") == true){
+            defaultCharactersCap = "";
+            defaultCharactersNoCap = "";
+        }
+
+        if( $("#stringPersonalise").prop("checked") == false){
+            personalisedText = "";
+        }
+
+        if( personalisedText == "" && digits == "" && defaultSymbols == "" && similarDigits == "" && similarCharacters == "" && defaultCharactersCap == "" && defaultCharactersNoCap == "" ){
+            showAlert("The chosen options cant give any password. You may consideer allowing a set of characters or setting your own characters to pick from")
+            return "";
+        }else{
+            var stringOfCharactersUsed = "" + defaultCharactersNoCap + defaultCharactersCap + similarCharacters + similarDigits + defaultSymbols + digits + personalisedText;
+            return stringOfCharactersUsed;
+        }
+    }
+
+    //show and hide the cutom characters section
+    $("#stringPersonalise[type=checkbox]").change(function(){
+        if(this.checked == true) {
+            $("#QPersonalisedTexteArea").show();
+        }else{
+            $("#QPersonalisedTexteArea").hide();
+        }
+    })
+
+    //Generate the string when the button is clicked
+    $("#generateButton").on("click",function(){
+        var stringOfChar = stringOfCharacters();
+        var lengthOfChar = $("#stringLength").val();
+        var outPutString ="";
+        
+        for (var i = 0; i < lengthOfChar; i++) {
+            var rndNb = Math.floor(Math.random() * stringOfChar.length);
+            outPutString += stringOfChar.charAt(rndNb);
+            
+        }
+
+        $("#Output").val(outPutString);
+
+    })
+
+    //Copy what's in the output to the clip board (user can modify the string, so this button is needed and can't be automated)
+    $("#copyButton").on("click",function(){
+        var OutputText = document.getElementById("Output").value;
+        navigator.clipboard.writeText(OutputText)
+        alert("copied : "+OutputText);
+
+    })
+</script>
+
+</html> 
